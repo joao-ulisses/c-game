@@ -21,7 +21,9 @@ int main() {
         printf("Caverna X - Dificuldade: %d\n\n", dificuldade);
         for(y = 0; y < MAX_LINHA; y++) {
             for(x = 0; x < MAX_COLUNA; x++) {
-                if(y == 0 || x == 0 || x == MAX_COLUNA - 1 || y == MAX_LINHA - 1 || x == 20) {
+                if (x == 20 && y != 0 && y != 9 && y != 4) {
+                    printf("|");
+                } else if(y == 0 || x == 0 || x == MAX_COLUNA - 1 || y == MAX_LINHA - 1) {
                     printf("#");
                 } else if (x == px && y == py) {
                     printf("P");
