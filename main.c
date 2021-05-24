@@ -9,16 +9,20 @@ int main() {
     srand(time(NULL));
     int ox = MAX_COLUNA-2, oy = MAX_LINHA-2;
     int px = 1, py = 1;
-    int mx = (int)(MAX_COLUNA * 0.7), my = (int)(MAX_LINHA * 0.7);
+    int mx = (int)(MAX_COLUNA * 0.4), my = (int)(MAX_LINHA * 0.8);
     int x,y;
     char controle;
     int movimentoRealizado;
-    int dificuldade = 1;
-    
+    int dificuldade = 1, chaveObtida = 0;
+    int cx = (int)(rand() % 40), cy = (int)(rand() % 10);
+    while (cx == 20 || cx == 39 || cx == 0 || cy == 0 || cy == 9) {
+        cx = (int)(rand() % 40);
+        cy = (int)(rand() % 10);
+    }
     for(;;) {
         system("CLS");
-        
         printf("Caverna X - Dificuldade: %d\n\n", dificuldade);
+        printf("%i\n", chaveObtida);
         for(y = 0; y < MAX_LINHA; y++) {
             for(x = 0; x < MAX_COLUNA; x++) {
                 if (x == 20 && y != 0 && y != 9 && y != 4) {
@@ -31,6 +35,8 @@ int main() {
                     printf("M");
                 } else if (x == ox && y == oy) {
                     printf("@");
+                } else if (x == cx && y == cy){
+                    printf("C");
                 } else {
                     printf(".");
                 }
@@ -50,12 +56,18 @@ int main() {
                 if(py < 1) {
                     py = 1;
                     movimentoRealizado = 0;
-                }
+                } else if (px == 20) {
+                    py = 4;
+                    movimentoRealizado = 0;
+                }   
                 break;
             case 's':
                 py += 1;
                 if(py >= MAX_LINHA - 1) {
                     py = MAX_LINHA -2;
+                    movimentoRealizado = 0;
+                } else if (px == 20) {
+                    py = 4;
                     movimentoRealizado = 0;
                 }
                 break;
@@ -64,6 +76,11 @@ int main() {
                 if (px < 1) {
                     px = 1;
                     movimentoRealizado = 0 ;
+                } else if (py != 4) {
+                    if (px == 20) {
+                        px = 21;
+                        movimentoRealizado = 0;
+                    }
                 }
                 break;
             case 'd':
@@ -71,18 +88,37 @@ int main() {
                 if(px >= MAX_COLUNA - 1) {
                     px = MAX_COLUNA -2;
                     movimentoRealizado = 0;
+                } else if (py != 4) {
+                    if (px == 20) {
+                        px = 19;
+                        movimentoRealizado = 0;
+                    }
                 }
                 break;
                 
             default:
                 movimentoRealizado = 0;
-                printf("Comando invalido!\n");
+                printf("\nComando invalido!\n");
                 printf("Pressione qualquer tecla para continuar!\n");
                 system("PAUSE");
         }
-        
         if (movimentoRealizado == 1) {
-            int direcao = rand() % 4;
+            int direcao;
+            if (py == my) {
+                if (px > mx) {
+                    direcao = 3;
+                } else {
+                    direcao = 2;
+                }
+            } else if (px == mx) {
+                if (py > my) {
+                    direcao = 1;
+                } else {
+                    direcao = 0;
+                }
+            } else {
+                direcao = rand() % 4;
+            }
             switch(direcao) {
                 case 0:
                     my -= dificuldade;
@@ -117,7 +153,7 @@ int main() {
         if (px == mx && py == my) {
             printf("\n\nGAME OVER\n");
             break;
-        } else if (px == ox && py == oy) {
+        } else if (px == ox && py == oy && chaveObtida == 1) {
             printf("\n\nYOU WIN\n");
             system("PAUSE");
             
@@ -127,6 +163,9 @@ int main() {
             py = 1;
             mx = (int)(MAX_COLUNA * 0.7);
             my = (int)(MAX_LINHA * 0.7);
+        } else if (px == cx && px == cy) {
+            printf("\n\npegou a chave");
+            chaveObtida = 1;
         }
     }
     system("PAUSE");
