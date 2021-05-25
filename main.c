@@ -9,11 +9,12 @@ int main() {
     srand(time(NULL));
     int ox = MAX_COLUNA-2, oy = MAX_LINHA-2;
     int px = 1, py = 1;
-    int mx = (int)(MAX_COLUNA * 0.4), my = (int)(MAX_LINHA * 0.8);
+    int sx = (int)(MAX_COLUNA * 0.4), sy = (int)(MAX_LINHA * 0.8);
     int x,y;
-    char controle;
+    int controle;
     int movimentoRealizado;
-    int dificuldade = 1, chaveObtida = 0;
+    int dificuldade = 1;
+    int chaveObtida = 0;
     int cx = (int)(rand() % 40), cy = (int)(rand() % 10);
     while (cx == 20 || cx == 39 || cx == 0 || cy == 0 || cy == 9) {
         cx = (int)(rand() % 40);
@@ -21,8 +22,8 @@ int main() {
     }
     for(;;) {
         system("CLS");
-        printf("Caverna X - Dificuldade: %d\n\n", dificuldade);
-        printf("%i\n", chaveObtida);
+        printf("Torre Assombrada - Fúria da Wraith: %d\n\n", dificuldade);
+        printf("Chave obtida: %i\n", chaveObtida);
         for(y = 0; y < MAX_LINHA; y++) {
             for(x = 0; x < MAX_COLUNA; x++) {
                 if (x == 20 && y != 0 && y != 9 && y != 4) {
@@ -31,8 +32,8 @@ int main() {
                     printf("#");
                 } else if (x == px && y == py) {
                     printf("P");
-                } else if (x == mx && y == my) {
-                    printf("M");
+                } else if (x == sx && y == sy) {
+                    printf("S");
                 } else if (x == ox && y == oy) {
                     printf("@");
                 } else if (x == cx && y == cy){
@@ -45,13 +46,13 @@ int main() {
         }
         printf("\n");
         
-        printf("Controles: W (cima)\tD (direita)\tS (baixo)\tA (esquerda)\n");
+        printf("Controles: 8 (cima)\t6 (direita)\t5 (baixo)\t4 (esquerda)\n");
         printf("Sua vez! Digite um controle: ");
-        scanf("%c", &controle);
+        scanf("%i", &controle);
         
         movimentoRealizado = 1;
         switch(controle) {
-            case 'w':
+            case 8:
                 py -= 1;
                 if(py < 1) {
                     py = 1;
@@ -59,9 +60,9 @@ int main() {
                 } else if (px == 20) {
                     py = 4;
                     movimentoRealizado = 0;
-                }   
+                }
                 break;
-            case 's':
+            case 5:
                 py += 1;
                 if(py >= MAX_LINHA - 1) {
                     py = MAX_LINHA -2;
@@ -71,7 +72,7 @@ int main() {
                     movimentoRealizado = 0;
                 }
                 break;
-            case 'a':
+            case 4:
                 px -= 1;
                 if (px < 1) {
                     px = 1;
@@ -83,7 +84,7 @@ int main() {
                     }
                 }
                 break;
-            case 'd':
+            case 6:
                 px += 1;
                 if(px >= MAX_COLUNA - 1) {
                     px = MAX_COLUNA -2;
@@ -102,16 +103,21 @@ int main() {
                 printf("Pressione qualquer tecla para continuar!\n");
                 system("PAUSE");
         }
+        
+        if (py == cy && px == cx) {
+            chaveObtida = 1;
+            cy = 0, cx = 0;
+        }
         if (movimentoRealizado == 1) {
             int direcao;
-            if (py == my) {
-                if (px > mx) {
+            if (py == sy) {
+                if (px > sx) {
                     direcao = 3;
                 } else {
                     direcao = 2;
                 }
-            } else if (px == mx) {
-                if (py > my) {
+            } else if (px == sx) {
+                if (py > sy) {
                     direcao = 1;
                 } else {
                     direcao = 0;
@@ -121,36 +127,36 @@ int main() {
             }
             switch(direcao) {
                 case 0:
-                    my -= dificuldade;
-                    if (my < 1) {
-                        my = 1;
+                    sy -= dificuldade;
+                    if (sy < 1) {
+                        sy = 1;
                     }
                     break;
                     
                 case 1:
-                    my += dificuldade;
-                    if (my >= MAX_LINHA - 1) {
-                        my = MAX_LINHA - 2;
+                    sy += dificuldade;
+                    if (sy >= MAX_LINHA - 1) {
+                        sy = MAX_LINHA - 2;
                     }
                     break;
                     
                 case 2:
-                    mx -= dificuldade;
-                    if (mx < 1) {
-                        mx = 1;
+                    sx -= dificuldade;
+                    if (sx < 1) {
+                        sx = 1;
                     }
                     break;
                     
                 case 3:
-                    mx += dificuldade;
-                    if (mx >= MAX_COLUNA - 1) {
-                        mx = MAX_COLUNA - 2;
+                    sx += dificuldade;
+                    if (sx >= MAX_COLUNA - 1) {
+                        sx = MAX_COLUNA - 2;
                     }
                     break;
                     
             }
         }
-        if (px == mx && py == my) {
+        if (px == sx && py == sy) {
             printf("\n\nGAME OVER\n");
             break;
         } else if (px == ox && py == oy && chaveObtida == 1) {
@@ -161,12 +167,15 @@ int main() {
             
             px = 1;
             py = 1;
-            mx = (int)(MAX_COLUNA * 0.7);
-            my = (int)(MAX_LINHA * 0.7);
-        } else if (px == cx && px == cy) {
-            printf("\n\npegou a chave");
-            chaveObtida = 1;
-        }
+            chaveObtida = 0;
+            cx = (int)(rand() % 40), cy = (int)(rand() % 10);
+            while (cx == 20 || cx == 39 || cx == 0 || cy == 0 || cy == 9) {
+                cx = (int)(rand() % 40);
+                cy = (int)(rand() % 10);
+            }
+            sx = (int)(MAX_COLUNA * 0.7);
+            sy = (int)(MAX_LINHA * 0.7);
+        } 
     }
     system("PAUSE");
     return 0;
